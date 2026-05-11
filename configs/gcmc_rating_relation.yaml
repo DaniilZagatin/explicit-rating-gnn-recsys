@@ -1,0 +1,32 @@
+# GCMC-подобная модель.
+# Рейтинг рассматривается как тип ребра в user-item графе.
+
+experiment:
+  name: gcmc_rating_relation
+  seed: 42
+
+data:
+  root: data/movielens20-withfeatures-split
+  train_file: train_warm_interactions.parquet
+  val_file: warm_val_interactions.parquet
+  test_file: warm_test_interactions.parquet
+  item_features_file: item_features_warm.parquet
+  feature_cols_file: feature_cols.json
+
+model:
+  name: gcmc_rating_relation
+  embedding_dim: 128
+  hidden_dim: 128
+  rating_values: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+  num_layers: 1
+  dropout: 0.1
+  use_item_features: true
+
+train:
+  epochs: 10
+  learning_rate: 0.0003
+  weight_decay: 0.000001
+
+eval:
+  k_values: [10, 20, 50]
+  main_metric: ndcg@20
