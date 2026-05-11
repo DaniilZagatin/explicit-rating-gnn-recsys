@@ -1,0 +1,31 @@
+\begin{longtable}{lrrrrrr}
+\caption{Полные результаты cold-user.}\label{tab:full_cold_user_results}\\
+\toprule
+Модель & HR@20 & HR@50 & Recall@20 & Recall@50 & nDCG@20 & nDCG@50 \\
+\midrule
+\endfirsthead
+\toprule
+Модель & HR@20 & HR@50 & Recall@20 & Recall@50 & nDCG@20 & nDCG@50 \\
+\midrule
+\endhead
+\texttt{\detokenize{Ens-TT-GCMC-frz}} & 0.2825 & 0.4664 & 0.1264 & 0.2427 & 0.0667 & 0.0982 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & 0.2603 & 0.4280 & 0.1165 & 0.2214 & 0.0618 & 0.0901 \\
+\texttt{\detokenize{Ens-TT-NGCF}} & 0.2126 & 0.3410 & 0.0945 & 0.1689 & 0.0523 & 0.0724 \\
+\texttt{\detokenize{GCMC}} & 0.1892 & 0.3062 & 0.0845 & 0.1478 & 0.0470 & 0.0641 \\
+\texttt{\detokenize{GCMC-L1}} & 0.0001 & 0.0020 & 0.0000 & 0.0007 & 0.0000 & 0.0002 \\
+\texttt{\detokenize{GCMC-L2}} & 0.1892 & 0.3062 & 0.0845 & 0.1478 & 0.0470 & 0.0641 \\
+\texttt{\detokenize{GCMC-L3}} & 0.2023 & 0.3229 & 0.0919 & 0.1585 & 0.0502 & 0.0681 \\
+\texttt{\detokenize{GCMC-L4}} & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+\texttt{\detokenize{GCMC-add}} & 0.1833 & 0.3032 & 0.0819 & 0.1456 & 0.0452 & 0.0625 \\
+\texttt{\detokenize{GCMC-noFeat}} & 0.1843 & 0.3048 & 0.0818 & 0.1467 & 0.0468 & 0.0644 \\
+\texttt{\detokenize{GCMC-time}} & 0.1946 & 0.3134 & 0.0863 & 0.1511 & 0.0469 & 0.0645 \\
+\texttt{\detokenize{NGCF-exp}} & 0.0999 & 0.1651 & 0.0395 & 0.0670 & 0.0194 & 0.0268 \\
+\texttt{\detokenize{NGCF-lin}} & 0.0994 & 0.1649 & 0.0390 & 0.0669 & 0.0193 & 0.0268 \\
+\texttt{\detokenize{NGCF-spline}} & 0.0003 & 0.0004 & 0.0001 & 0.0002 & 0.0000 & 0.0001 \\
+\texttt{\detokenize{TT}} & 0.3156 & 0.5057 & 0.1426 & 0.2649 & 0.0778 & 0.1109 \\
+\texttt{\detokenize{TT-bin}} & 0.3239 & 0.5071 & 0.1481 & 0.2649 & 0.0806 & 0.1123 \\
+\texttt{\detokenize{TT<-GCMC}} & 0.3171 & 0.5034 & 0.1441 & 0.2625 & 0.0779 & 0.1099 \\
+\texttt{\detokenize{TT<-NGCF}} & 0.1431 & 0.2558 & 0.0572 & 0.1101 & 0.0293 & 0.0436 \\
+\texttt{\detokenize{pretrain-TT}} & 0.2332 & 0.3886 & 0.1056 & 0.1974 & 0.0592 & 0.0840 \\
+\bottomrule
+\end{longtable}

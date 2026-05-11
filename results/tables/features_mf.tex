@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\setlength{\tabcolsep}{4pt}
+	\caption{Влияние размерности эмбеддингов и способа использования признаков фильмов в MF. Все метрики приведены для warm-start сценария.}
+	\label{tab:features_mf}
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Модель & HR@20 & HR@50 & nDCG@20 \\
+		\midrule
+		\texttt{MF-64}      & 0.2447 & 0.3956 & 0.0601 \\
+		\texttt{MF-128}     & 0.2458 & 0.3990 & 0.0616 \\
+		\texttt{MF-128-init}& \textbf{0.2479} & \textbf{0.4021} & \textbf{0.0621} \\
+		\texttt{MF-128-add} & 0.2349 & 0.3971 & 0.0560 \\
+		\texttt{MF-256-add} & 0.2385 & 0.3969 & 0.0577 \\
+		\bottomrule
+	\end{tabular}
+\end{table}

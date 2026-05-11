@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние размерности и признаков в MF с относительным приростом.}
+\label{tab:features_mf_with_gain}
+\begin{tabular}{lrrrrr}
+\toprule
+Модель & Warm HR@20 & Прирост HR@20 к MF-128 & Warm HR@50 & Warm nDCG@20 & Прирост nDCG@20 к MF-128 \\
+\midrule
+\texttt{\detokenize{MF-64}} & \textbf{0.2497} & \textbf{+1.6\%} & \textbf{0.4056} & \textbf{0.0630} & \textbf{+2.4\%} \\
+\texttt{\detokenize{MF-128}} & 0.2458 & 0.0\% & 0.3990 & 0.0616 & 0.0\% \\
+\texttt{\detokenize{MF-128-init}} & 0.2479 & +0.9\% & 0.4021 & 0.0621 & +0.9\% \\
+\texttt{\detokenize{MF-128-add}} & 0.2349 & -4.5\% & 0.3971 & 0.0560 & -9.0\% \\
+\texttt{\detokenize{MF-256-add}} & 0.2385 & -3.0\% & 0.3969 & 0.0577 & -6.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}

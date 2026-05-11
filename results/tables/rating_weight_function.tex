@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние функции рейтингового веса в NGCF в warm-start сценарии. Эксперимент проверяет, полезно ли обучать зависимость веса ребра от значения рейтинга.}
+\label{tab:rating_weight_function}
+\begin{tabular}{llrrr}
+\toprule
+Функция веса & Модель & Warm HR@20 & Warm HR@50 & Warm nDCG@20 \\
+\midrule
+Линейная & \texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.3545 & 0.0452 \\
+Экспоненциальная смесь & \texttt{\detokenize{NGCF-exp}} & 0.2038 & 0.3555 & 0.0455 \\
+Обучаемая softplus-spline & \texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{0.3644} & \textbf{0.0473} \\
+\bottomrule
+\end{tabular}
+\end{table}

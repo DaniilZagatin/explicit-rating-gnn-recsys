@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние признаков фильмов в GCMC с относительным приростом.}
+\label{tab:features_gcmc_with_gain}
+\begin{tabular}{lrrrrrr}
+\toprule
+Модель & Warm HR@20 & Прирост Warm HR@20 к noFeat & Warm nDCG@20 & Cold-user HR@20 & Прирост Cold HR@20 к noFeat & Cold-user nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC-noFeat}} & 0.1887 & 0.0\% & 0.0473 & 0.1843 & 0.0\% & 0.0468 \\
+\texttt{\detokenize{GCMC}} & \textbf{0.1889} & \textbf{+0.1\%} & \textbf{0.0477} & \textbf{0.1892} & \textbf{+2.7\%} & \textbf{0.0470} \\
+\texttt{\detokenize{GCMC-add}} & 0.1871 & -0.9\% & 0.0457 & 0.1833 & -0.5\% & 0.0452 \\
+\bottomrule
+\end{tabular}
+\end{table}

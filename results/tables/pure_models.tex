@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Сравнение чистых моделей.}
+\label{tab:pure_models}
+\begin{tabular}{lrrrrrr}
+\toprule
+Модель & Warm HR@20 & Warm HR@50 & Warm nDCG@20 & Cold-user HR@20 & Cold-user HR@50 & Cold-user nDCG@20 \\
+\midrule
+\texttt{\detokenize{MF-128}} & 0.2458 & 0.3990 & 0.0616 & --- & --- & --- \\
+\texttt{\detokenize{TT}} & \textbf{0.3223} & \textbf{0.5128} & \textbf{0.0796} & \textbf{0.3156} & \textbf{0.5057} & \textbf{0.0778} \\
+\texttt{\detokenize{GCMC-rel}} & 0.1929 & 0.3123 & 0.0470 & --- & --- & --- \\
+\texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.3545 & 0.0452 & 0.0994 & 0.1649 & 0.0193 \\
+\bottomrule
+\end{tabular}
+\end{table}

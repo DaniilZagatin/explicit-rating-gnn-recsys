@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Сравнение графовых моделей с относительным приростом внутри семейства.}
+\label{tab:graph_models_with_gain}
+\begin{tabular}{llrrrrrr}
+\toprule
+Семейство & Модель & Warm HR@20 & Прирост HR@20 к базе семейства & Warm nDCG@20 & Прирост nDCG@20 к базе семейства & Cold-user HR@20 & Cold-user nDCG@20 \\
+\midrule
+GCMC & \texttt{\detokenize{GCMC-rel}} & 0.1929 & 0.0\% & 0.0470 & 0.0\% & --- & --- \\
+GCMC & \texttt{\detokenize{GCMC-noFeat}} & 0.1887 & -2.1\% & 0.0473 & +0.8\% & 0.1843 & 0.0468 \\
+GCMC & \texttt{\detokenize{GCMC}} & 0.1889 & -2.0\% & 0.0477 & +1.5\% & 0.1892 & \textbf{0.0470} \\
+GCMC & \texttt{\detokenize{GCMC-add}} & 0.1871 & -3.0\% & 0.0457 & -2.8\% & 0.1833 & 0.0452 \\
+GCMC & \texttt{\detokenize{GCMC-time}} & 0.1989 & +3.1\% & \textbf{0.0482} & +2.6\% & \textbf{0.1946} & 0.0469 \\
+NGCF & \texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.0\% & 0.0452 & 0.0\% & 0.0994 & 0.0193 \\
+NGCF & \texttt{\detokenize{NGCF-exp}} & 0.2038 & +0.7\% & 0.0455 & +0.7\% & 0.0999 & 0.0194 \\
+NGCF & \texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{+4.1\%} & 0.0473 & \textbf{+4.7\%} & 0.0003 & 0.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}

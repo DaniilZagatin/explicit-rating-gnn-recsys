@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Итоговое сравнение качества и времени оценки. В таблицу включены ключевые представители семейств моделей.}
+\label{tab:final_quality_time}
+\begin{tabular}{lrrrrr}
+\toprule
+Модель & Warm HR@20 & Warm nDCG@20 & Cold HR@20 & Cold nDCG@20 & Время на 100k, сек \\
+\midrule
+\texttt{\detokenize{MF-128}} & 0.2458 & 0.0616 & --- & --- & 71.52 \\
+\texttt{\detokenize{TT}} & 0.3223 & 0.0796 & 0.3156 & 0.0778 & 90.48 \\
+\texttt{\detokenize{TT-bin}} & 0.3207 & 0.0792 & \textbf{0.3239} & \textbf{0.0806} & 89.70 \\
+\texttt{\detokenize{GCMC-time}} & 0.1989 & 0.0482 & 0.1946 & 0.0469 & 69.10 \\
+\texttt{\detokenize{NGCF-spline}} & 0.2108 & 0.0473 & 0.0003 & 0.0000 & \textbf{65.67} \\
+\texttt{\detokenize{TT<-GCMC}} & 0.3196 & 0.0785 & 0.3171 & 0.0779 & 94.98 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & \textbf{0.3432} & \textbf{0.0874} & 0.2603 & 0.0618 & 83.27 \\
+\bottomrule
+\end{tabular}
+\end{table}

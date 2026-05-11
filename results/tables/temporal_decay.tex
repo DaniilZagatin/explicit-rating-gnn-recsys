@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние временного затухания.}
+\label{tab:temporal_decay}
+\begin{tabular}{llrrrrrr}
+\toprule
+Модель & Temporal decay & Warm HR@20 & Warm HR@50 & Warm nDCG@20 & Cold-user HR@20 & Cold-user HR@50 & Cold-user nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC}} & нет & 0.1889 & 0.3121 & 0.0477 & 0.1892 & 0.3062 & \textbf{0.0470} \\
+\texttt{\detokenize{GCMC-time}} & да & \textbf{0.1989} & \textbf{0.3280} & \textbf{0.0482} & \textbf{0.1946} & \textbf{0.3134} & 0.0469 \\
+\bottomrule
+\end{tabular}
+\end{table}

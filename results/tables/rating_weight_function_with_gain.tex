@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Функции рейтингового веса с относительным приростом в warm-start.}
+\label{tab:rating_weight_function_with_gain}
+\begin{tabular}{llrrrrrr}
+\toprule
+Функция веса & Модель & Warm HR@20 & Прирост HR@20 к линейной & Warm nDCG@20 & Прирост nDCG@20 к линейной & Cold-user HR@20 & Cold-user nDCG@20 \\
+\midrule
+Линейная & \texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.0\% & 0.0452 & 0.0\% & 0.0994 & 0.0193 \\
+Экспоненциальная смесь & \texttt{\detokenize{NGCF-exp}} & 0.2038 & +0.7\% & 0.0455 & +0.7\% & \textbf{0.0999} & \textbf{0.0194} \\
+Обучаемая softplus-spline & \texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{+4.1\%} & \textbf{0.0473} & \textbf{+4.7\%} & 0.0003 & 0.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}

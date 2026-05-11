@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние признаков фильмов в GCMC в warm-start сценарии. Эксперимент проверяет, улучшает ли прямое добавление item features качество графового распространения.}
+\label{tab:features_gcmc}
+\begin{tabular}{lrrr}
+\toprule
+Модель & Warm HR@20 & Warm HR@50 & Warm nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC-noFeat}} & 0.1887 & 0.3103 & 0.0473 \\
+\texttt{\detokenize{GCMC}} & \textbf{0.1889} & \textbf{0.3121} & \textbf{0.0477} \\
+\texttt{\detokenize{GCMC-add}} & 0.1871 & 0.3098 & 0.0457 \\
+\bottomrule
+\end{tabular}
+\end{table}

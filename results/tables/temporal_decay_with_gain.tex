@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Влияние temporal decay с относительным приростом.}
+\label{tab:temporal_decay_with_gain}
+\begin{tabular}{llrrrrrr}
+\toprule
+Модель & Temporal decay & Warm HR@20 & Прирост Warm HR@20 & Cold-user HR@20 & Прирост Cold HR@20 & Warm nDCG@20 & Cold-user nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC}} & нет & 0.1889 & 0.0\% & 0.1892 & 0.0\% & 0.0477 & \textbf{0.0470} \\
+\texttt{\detokenize{GCMC-time}} & да & \textbf{0.1989} & \textbf{+5.3\%} & \textbf{0.1946} & \textbf{+2.8\%} & \textbf{0.0482} & 0.0469 \\
+\bottomrule
+\end{tabular}
+\end{table}

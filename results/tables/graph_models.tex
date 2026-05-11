@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Сравнение графовых моделей в warm-start сценарии. Таблица используется для проверки, какой способ учёта explicit feedback лучше работает для известных пользователей.}
+\label{tab:graph_models}
+\begin{tabular}{llrrr}
+\toprule
+Семейство & Модель & Warm HR@20 & Warm HR@50 & Warm nDCG@20 \\
+\midrule
+GCMC & \texttt{\detokenize{GCMC-rel}} & 0.1929 & 0.3123 & 0.0470 \\
+GCMC & \texttt{\detokenize{GCMC}} & 0.1889 & 0.3121 & 0.0477 \\
+GCMC & \texttt{\detokenize{GCMC-time}} & 0.1989 & 0.3280 & \textbf{0.0482} \\
+NGCF & \texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.3545 & 0.0452 \\
+NGCF & \texttt{\detokenize{NGCF-exp}} & 0.2038 & 0.3555 & 0.0455 \\
+NGCF & \texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{0.3644} & 0.0473 \\
+\bottomrule
+\end{tabular}
+\end{table}

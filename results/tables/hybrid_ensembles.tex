@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Гибридные модели и ансамбли в warm-start сценарии. Таблица проверяет, даёт ли объединение двубашенной и графовой компонент выигрыш относительно базовой TT.}
+\label{tab:hybrid_ensembles}
+\begin{tabular}{lrrrr}
+\toprule
+Модель & Warm HR@20 & Warm HR@50 & Warm nDCG@20 & Warm nDCG@50 \\
+\midrule
+\texttt{\detokenize{TT}} & 0.3223 & 0.5128 & 0.0796 & 0.1140 \\
+\texttt{\detokenize{TT<-GCMC}} & 0.3196 & 0.5128 & 0.0785 & 0.1121 \\
+\texttt{\detokenize{TT<-NGCF}} & 0.1437 & 0.2629 & 0.0292 & 0.0442 \\
+\texttt{\detokenize{Ens-TT-NGCF}} & 0.2208 & 0.3580 & 0.0542 & 0.0752 \\
+\texttt{\detokenize{Ens-TT-GCMC-frz}} & 0.3251 & 0.5117 & 0.0806 & 0.1151 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & \textbf{0.3432} & \textbf{0.5373} & \textbf{0.0874} & \textbf{0.1235} \\
+\bottomrule
+\end{tabular}
+\end{table}

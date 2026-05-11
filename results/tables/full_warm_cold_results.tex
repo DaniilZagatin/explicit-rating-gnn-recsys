@@ -1,0 +1,57 @@
+\begin{longtable}{llrrrrrr}
+\caption{Полные результаты warm-start и cold-user.}\label{tab:full_warm_cold_results}\\
+\toprule
+Модель & Сценарий & HR@20 & HR@50 & Recall@20 & Recall@50 & nDCG@20 & nDCG@50 \\
+\midrule
+\endfirsthead
+\toprule
+Модель & Сценарий & HR@20 & HR@50 & Recall@20 & Recall@50 & nDCG@20 & nDCG@50 \\
+\midrule
+\endhead
+\texttt{\detokenize{Ens-TT-GCMC-frz}} & warm-start & 0.3251 & 0.5117 & 0.1499 & 0.2771 & 0.0806 & 0.1151 \\
+\texttt{\detokenize{Ens-TT-GCMC-frz}} & cold-user & 0.2825 & 0.4664 & 0.1264 & 0.2427 & 0.0667 & 0.0982 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & warm-start & \textbf{0.3432} & \textbf{0.5373} & \textbf{0.1598} & \textbf{0.2930} & \textbf{0.0874} & \textbf{0.1235} \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & cold-user & 0.2603 & 0.4280 & 0.1165 & 0.2214 & 0.0618 & 0.0901 \\
+\texttt{\detokenize{Ens-TT-NGCF}} & warm-start & 0.2208 & 0.3580 & 0.0990 & 0.1764 & 0.0542 & 0.0752 \\
+\texttt{\detokenize{Ens-TT-NGCF}} & cold-user & 0.2126 & 0.3410 & 0.0945 & 0.1689 & 0.0523 & 0.0724 \\
+\texttt{\detokenize{GCMC}} & warm-start & 0.1889 & 0.3121 & 0.0840 & 0.1507 & 0.0477 & 0.0657 \\
+\texttt{\detokenize{GCMC}} & cold-user & 0.1892 & 0.3062 & 0.0845 & 0.1478 & 0.0470 & 0.0641 \\
+\texttt{\detokenize{GCMC-L1}} & warm-start & 0.2078 & 0.3273 & 0.0929 & 0.1584 & 0.0498 & 0.0674 \\
+\texttt{\detokenize{GCMC-L1}} & cold-user & 0.0001 & 0.0020 & 0.0000 & 0.0007 & 0.0000 & 0.0002 \\
+\texttt{\detokenize{GCMC-L2}} & warm-start & 0.1889 & 0.3121 & 0.0840 & 0.1507 & 0.0477 & 0.0657 \\
+\texttt{\detokenize{GCMC-L2}} & cold-user & 0.1892 & 0.3062 & 0.0845 & 0.1478 & 0.0470 & 0.0641 \\
+\texttt{\detokenize{GCMC-L3}} & warm-start & 0.2080 & 0.3305 & 0.0931 & 0.1610 & 0.0513 & 0.0696 \\
+\texttt{\detokenize{GCMC-L3}} & cold-user & 0.2023 & 0.3229 & 0.0919 & 0.1585 & 0.0502 & 0.0681 \\
+\texttt{\detokenize{GCMC-L4}} & warm-start & 0.1911 & 0.3129 & 0.0843 & 0.1507 & 0.0469 & 0.0649 \\
+\texttt{\detokenize{GCMC-L4}} & cold-user & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+\texttt{\detokenize{GCMC-add}} & warm-start & 0.1871 & 0.3098 & 0.0827 & 0.1500 & 0.0457 & 0.0639 \\
+\texttt{\detokenize{GCMC-add}} & cold-user & 0.1833 & 0.3032 & 0.0819 & 0.1456 & 0.0452 & 0.0625 \\
+\texttt{\detokenize{GCMC-noFeat}} & warm-start & 0.1887 & 0.3103 & 0.0839 & 0.1498 & 0.0473 & 0.0651 \\
+\texttt{\detokenize{GCMC-noFeat}} & cold-user & 0.1843 & 0.3048 & 0.0818 & 0.1467 & 0.0468 & 0.0644 \\
+\texttt{\detokenize{GCMC-rel}} & warm-start & 0.1929 & 0.3123 & 0.0860 & 0.1529 & 0.0470 & 0.0651 \\
+\texttt{\detokenize{GCMC-time}} & warm-start & 0.1989 & 0.3280 & 0.0875 & 0.1583 & 0.0482 & 0.0673 \\
+\texttt{\detokenize{GCMC-time}} & cold-user & 0.1946 & 0.3134 & 0.0863 & 0.1511 & 0.0469 & 0.0645 \\
+\texttt{\detokenize{MF-128}} & warm-start & 0.2458 & 0.3990 & 0.1125 & 0.2037 & 0.0616 & 0.0862 \\
+\texttt{\detokenize{MF-128-add}} & warm-start & 0.2349 & 0.3971 & 0.1023 & 0.1924 & 0.0560 & 0.0804 \\
+\texttt{\detokenize{MF-128-init}} & warm-start & 0.2479 & 0.4021 & 0.1134 & 0.2055 & 0.0621 & 0.0870 \\
+\texttt{\detokenize{MF-256-add}} & warm-start & 0.2385 & 0.3969 & 0.1050 & 0.1933 & 0.0577 & 0.0817 \\
+\texttt{\detokenize{MF-64}} & warm-start & 0.2497 & 0.4056 & 0.1146 & 0.2079 & 0.0630 & 0.0883 \\
+\texttt{\detokenize{NGCF-exp}} & warm-start & 0.2038 & 0.3555 & 0.0862 & 0.1686 & 0.0455 & 0.0678 \\
+\texttt{\detokenize{NGCF-exp}} & cold-user & 0.0999 & 0.1651 & 0.0395 & 0.0670 & 0.0194 & 0.0268 \\
+\texttt{\detokenize{NGCF-lin}} & warm-start & 0.2024 & 0.3545 & 0.0856 & 0.1676 & 0.0452 & 0.0674 \\
+\texttt{\detokenize{NGCF-lin}} & cold-user & 0.0994 & 0.1649 & 0.0390 & 0.0669 & 0.0193 & 0.0268 \\
+\texttt{\detokenize{NGCF-spline}} & warm-start & 0.2108 & 0.3644 & 0.0895 & 0.1738 & 0.0473 & 0.0701 \\
+\texttt{\detokenize{NGCF-spline}} & cold-user & 0.0003 & 0.0004 & 0.0001 & 0.0002 & 0.0000 & 0.0001 \\
+\texttt{\detokenize{TT}} & warm-start & 0.3223 & 0.5128 & 0.1466 & 0.2735 & 0.0796 & 0.1140 \\
+\texttt{\detokenize{TT}} & cold-user & 0.3156 & 0.5057 & 0.1426 & 0.2649 & 0.0778 & 0.1109 \\
+\texttt{\detokenize{TT-SASRec}} & warm-start & 0.3240 & 0.5084 & 0.1491 & 0.2678 & 0.0814 & 0.1136 \\
+\texttt{\detokenize{TT-bin}} & warm-start & 0.3207 & 0.5072 & 0.1458 & 0.2654 & 0.0792 & 0.1117 \\
+\texttt{\detokenize{TT-bin}} & cold-user & 0.3239 & 0.5071 & 0.1481 & 0.2649 & 0.0806 & 0.1123 \\
+\texttt{\detokenize{TT<-GCMC}} & warm-start & 0.3196 & 0.5128 & 0.1442 & 0.2685 & 0.0785 & 0.1121 \\
+\texttt{\detokenize{TT<-GCMC}} & cold-user & 0.3171 & 0.5034 & 0.1441 & 0.2625 & 0.0779 & 0.1099 \\
+\texttt{\detokenize{TT<-NGCF}} & warm-start & 0.1437 & 0.2629 & 0.0576 & 0.1132 & 0.0292 & 0.0442 \\
+\texttt{\detokenize{TT<-NGCF}} & cold-user & 0.1431 & 0.2558 & 0.0572 & 0.1101 & 0.0293 & 0.0436 \\
+\texttt{\detokenize{pretrain-TT}} & warm-start & 0.2366 & 0.3909 & 0.1062 & 0.1969 & 0.0596 & 0.0841 \\
+\texttt{\detokenize{pretrain-TT}} & cold-user & 0.2332 & 0.3886 & 0.1056 & 0.1974 & 0.0592 & 0.0840 \\
+\bottomrule
+\end{longtable}

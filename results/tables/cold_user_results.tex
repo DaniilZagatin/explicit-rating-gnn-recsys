@@ -1,0 +1,23 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Сравнение моделей в cold-user сценарии. Для новых пользователей качество измеряется после построения пользовательского представления по support-истории.}
+\label{tab:cold_user_results}
+\begin{tabular}{llrrrr}
+\toprule
+Семейство & Модель & HR@20 & HR@50 & nDCG@20 & nDCG@50 \\
+\midrule
+Two-Tower & \texttt{\detokenize{TT}} & 0.3156 & 0.5057 & 0.0778 & 0.1109 \\
+Two-Tower & \texttt{\detokenize{TT-bin}} & \textbf{0.3239} & \textbf{0.5071} & \textbf{0.0806} & \textbf{0.1123} \\
+GCMC & \texttt{\detokenize{GCMC}} & 0.1892 & 0.3062 & 0.0470 & 0.0641 \\
+GCMC & \texttt{\detokenize{GCMC-time}} & 0.1946 & 0.3134 & 0.0469 & 0.0645 \\
+NGCF & \texttt{\detokenize{NGCF-lin}} & 0.0994 & 0.1649 & 0.0193 & 0.0268 \\
+NGCF & \texttt{\detokenize{NGCF-exp}} & 0.0999 & 0.1651 & 0.0194 & 0.0268 \\
+NGCF & \texttt{\detokenize{NGCF-spline}} & 0.0003 & 0.0004 & 0.0000 & 0.0001 \\
+Hybrid & \texttt{\detokenize{TT<-GCMC}} & 0.3171 & 0.5034 & 0.0779 & 0.1099 \\
+Hybrid & \texttt{\detokenize{TT<-NGCF}} & 0.1431 & 0.2558 & 0.0293 & 0.0436 \\
+Ensemble & \texttt{\detokenize{Ens-TT-GCMC-frz}} & 0.2825 & 0.4664 & 0.0667 & 0.0982 \\
+Ensemble & \texttt{\detokenize{Ens-TT-GCMC-ft}} & 0.2603 & 0.4280 & 0.0618 & 0.0901 \\
+\bottomrule
+\end{tabular}
+\end{table}
