@@ -239,6 +239,7 @@ results/
 ## Стек технологий
 
 - Python;
+- CometML;
 - PyTorch;
 - PyTorch Geometric;
 - pandas;
@@ -247,10 +248,6 @@ results/
 - Jupyter Notebook;
 - Parquet;
 - YAML.
-
-## Лицензия
-
-Репозиторий распространяется в соответствии с условиями лицензии, указанной в файле [`LICENSE`](LICENSE).
 
 ## Автор
 
