@@ -1,0 +1,36 @@
+# Базовая матричная факторизация
+
+experiment:
+  name: mf_baseline
+  seed: 42
+
+data:
+  root: data/movielens20-withfeatures-split
+  train_file: train_warm_interactions.parquet
+  val_file: warm_val_interactions.parquet
+  test_file: warm_test_interactions.parquet
+  positive_threshold: 4.0
+
+model:
+  name: matrix_factorization
+  embedding_dim: 128
+  dropout: 0.0
+
+train:
+  epochs: 10
+  batch_size: 1024
+  learning_rate: 0.0003
+  weight_decay: 0.000001
+  num_workers: 4
+  use_amp: true
+
+eval:
+  k_values: [10, 20, 50]
+  main_metric: ndcg@20
+  metrics:
+    - precision
+    - recall
+    - hitrate
+    - mrr
+    - map
+    - ndcg

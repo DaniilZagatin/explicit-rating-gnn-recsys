@@ -1,0 +1,6 @@
+model,scenario,ndcg@20,hitrate@20,recall@20,map@20,mrr@20,notes
+Matrix Factorization,warm,,,,,,baseline
+Two-Tower SASRec-like,warm,,,,,,sequential two-tower baseline
+GCMC,warm,,,,,,rating as relation
+NGCF-like,warm,,,,,,rating as edge weight
+Two-Tower + GCMC,warm,,,,,,hybrid ensemble

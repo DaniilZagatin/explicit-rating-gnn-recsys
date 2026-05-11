@@ -1,0 +1,29 @@
+# NGCF-подобная модель.
+# Рейтинг используется как вес ребра при распространении сигнала по графу.
+
+experiment:
+  name: ngcf_rating_weighted
+  seed: 42
+
+data:
+  root: data/movielens20-withfeatures-split
+  train_file: train_warm_interactions.parquet
+  val_file: warm_val_interactions.parquet
+  test_file: warm_test_interactions.parquet
+  positive_threshold: 4.0
+
+model:
+  name: ngcf_rating_weighted
+  embedding_dim: 128
+  num_layers: 2
+  dropout: 0.1
+  rating_weight_function: softplus_centered
+
+train:
+  epochs: 10
+  learning_rate: 0.0003
+  weight_decay: 0.000001
+
+eval:
+  k_values: [10, 20, 50]
+  main_metric: ndcg@20

@@ -1,0 +1,43 @@
+# Двубашенная модель SASRec-вида.
+# User tower строит представление пользователя по последовательности оценённых фильмов.
+# Item tower строит представление фильма по embedding и дополнительным признакам.
+
+experiment:
+  name: two_tower_sasrec
+  seed: 42
+
+data:
+  root: data/movielens20-withfeatures-split
+  train_file: train_warm_interactions.parquet
+  val_file: warm_val_interactions.parquet
+  test_file: warm_test_interactions.parquet
+  item_features_file: item_features_warm.parquet
+  feature_cols_file: feature_cols.json
+  positive_threshold: 4.0
+  max_history_len: 50
+
+model:
+  name: two_tower_sasrec
+  embedding_dim: 128
+  hidden_dim: 128
+  num_attention_heads: 4
+  num_transformer_layers: 2
+  dropout: 0.1
+  use_item_features: true
+
+train:
+  epochs: 10
+  batch_size: 1024
+  learning_rate: 0.0003
+  weight_decay: 0.000001
+  num_workers: 4
+  use_amp: true
+
+eval:
+  k_values: [10, 20, 50]
+  main_metric: ndcg@20
+  eval_scenarios:
+    - warm
+    - cold_user
+    - cold_item
+    - both_cold
