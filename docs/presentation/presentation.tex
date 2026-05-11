@@ -1,0 +1,857 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+    \usetheme{Madrid}
+}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{textpos}
+\usepackage[russian]{babel}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{xcolor}
+\captionsetup{font=footnotesize,labelformat=empty}
+
+
+\title[GLANT]{\vspace{0.15cm}Применение графовых нейронных сетей в рекомендательных системах}
+
+\author[Загатин Д. И.]{%
+  \small{\textbf{ВЫПУСКНАЯ КВАЛИФИКАЦИОННАЯ РАБОТА}}\\[0.2cm]
+  \small{Загатин Даниил Ильич}\\[0.2cm]
+  \small{Научный руководитель: к.ф.-м.н. Китов Виктор Владимирович}
+}
+
+\institute[МГУ (ВМК)]{%
+  \includegraphics[scale=0.25]{vmk.png}\\[0.2cm]
+  \small{Кафедра Математических методов прогнозирования, факультет Вычислительной математики и кибернетики МГУ имени М. В. Ломоносова}%
+}
+\date{\scriptsize{\today}}
+
+
+\makeatletter
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    % Левая половина: институт
+    \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1ex,leftskip=1.2em]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortinstitute
+    \end{beamercolorbox}%
+    % Правая половина: дата и номер слайда
+    \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1ex,rightskip=1.2em plus1fil]{date in head/foot}%
+      \usebeamerfont{date in head/foot}%
+      \hfill\insertshortdate{}\hspace*{2em}%
+      \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}%
+  }%
+  \vskip0pt%
+}
+\makeatother
+
+\begin{document}
+
+% 1
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% 2
+\begin{frame}{Задача ранжирования в рекомендательных системах}
+
+Дано:
+\begin{itemize}
+  \item $\mathcal{U}$ — множество пользователей;
+  \item $\mathcal{I}$ — множество объектов, в работе рассматриваются фильмы;
+  \item история взаимодействий пользователя:
+  $
+    \mathcal{H}_u = \{(i, r_{ui}, t_{ui})\},
+  $
+  где $i$ — фильм, $t_{ui}$ — момент взаимодействия.
+\end{itemize}
+
+
+Найти:
+Для пользователя $u$ нужно построить персональный список рекомендаций:
+$$
+  \operatorname{TopK}(u) = (i_1, i_2, \ldots, i_K),
+$$
+такой, что наиболее релевантные фильмы находятся выше в списке.
+
+
+Задачи делятся по типам обратной связи:
+\begin{itemize}
+  \item \textbf{Implicit feedback:} известен только факт взаимодействия пользователя с фильмом.
+  \item \textbf{Explicit feedback:} известна численная оценка пользователя.
+  $
+    r_{ui}\in\{0.5,1.0,\ldots,5.0\}
+  $
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Цель работы}
+
+\begin{itemize}
+  \item собрать датасет и сгенерировать дополнительные признаки фильмов;
+  \item сравнить базовые модели рекомендаций с графовыми архитектурами;
+  \item исследовать способы использования рейтинга в графовых моделях;
+  \item оценить качество моделей при обычном сценарии, а также для новых пользователей;
+  \item сравнить время работы моделей.
+\end{itemize}
+
+\end{frame}
+
+% 3
+\begin{frame}{Метрики качества}
+
+
+\textbf{HitRate@K}.
+
+
+
+$$
+\operatorname{HitRate@K}(u)
+=
+\mathbb{I}\{R_K(u)\cap G(u)\ne \varnothing\}.
+$$
+
+$$
+\operatorname{HitRate@K}
+=
+\frac{1}{|\mathcal{U}_{eval}|}
+\sum_{u\in\mathcal{U}_{eval}}
+\operatorname{HitRate@K}(u).
+$$
+
+\textbf{NDCG@K}.
+
+$$
+\operatorname{NDCG@K}(u)
+=
+\frac{\operatorname{DCG@K}(u)}
+{\operatorname{IDCG@K}(u)},
+\qquad
+\operatorname{DCG@K}(u)
+=
+\sum_{j=1}^{K}
+\frac{2^{g_{u\pi_j}}-1}{\log_2(j+1)}.
+$$
+
+
+$$
+\operatorname{IDCG@K}(u)
+=
+\sum_{j=1}^{K}
+\frac{2^{g_{u\pi^{*}_j}}-1}{\log_2(j+1)},
+$$
+
+где $\pi^{*}$ — идеальный порядок фильмов по убыванию полезности.
+
+
+
+\footnotesize
+\begin{minipage}{0.96\linewidth}
+$R_K(u)$ — первые $K$ рекомендаций для $u$; 
+$G(u)$ — множество релевантных фильмов; 
+$\pi_j$ — фильм на позиции $j$; 
+$g_{ui}$ — полезность фильма $i$ для $u$.
+\end{minipage}
+
+\end{frame}
+
+% 4
+\begin{frame}{Двубашенная архитектура и SASRec}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/SASRec_like.png}
+    \caption{\small
+    SASRec-подобная двубашенная архитектура.
+    }
+    \label{fig:sasrec_two_tower_slide}
+\end{figure}
+
+\end{frame}
+
+% 5
+% 5
+\begin{frame}{Функция потерь для ранжирования}
+
+\begin{block}{BPR-loss}
+$
+  \mathcal{L}_{\mathrm{BPR}}
+  =
+  -\sum_{(u,i^+,i^-)}
+  \log \sigma\big(s(u,i^+) - s(u,i^-)\big)
+$, 
+
+где u - пользователь, $i^+$ и $i^-$ положительный и отрицательный кандидаты.
+
+\vspace{0.25em}
+
+\footnotesize
+BPR-loss напрямую оптимизирует относительный порядок объектов
+в персональном ранжировании.
+\end{block}
+
+\begin{block}{Мера релевантности}
+$
+  s(u,i)=\langle \mathbf{z}_u, \mathbf{z}_i \rangle,
+  \qquad
+  \mathbf{z}_u=f_{\theta}(\mathcal{H}_u),
+  \quad
+  \mathbf{z}_i=g_{\phi}(\mathbf{x}_i).
+$
+
+\vspace{0.25em}
+
+\footnotesize
+$\mathbf{z}_u$ — представление пользователя по истории $\mathcal{H}_u$;
+$\mathbf{z}_i$ — представление фильма по признакам $\mathbf{x}_i$;
+$f_{\theta}$ и $g_{\phi}$ — сеть по пользователям и сеть по объектам.
+\end{block}
+
+\end{frame}
+
+% 6
+\begin{frame}{NGCF: графовая парадигма}
+
+\small
+
+\textbf{Граф пользователь-объект}
+Взаимодействия пользователей и фильмов задают двудольный граф:
+
+$$
+\mathcal{G}=(\mathcal{U}\cup\mathcal{I},\mathcal{E}),
+\qquad
+(u,i)\in\mathcal{E}.
+$$
+
+\vspace{0.6em}
+
+\textbf{Механизм сообщений.}
+
+$$
+\mathbf{e}^{(k+1)}_u =
+\sigma\left(
+\sum_{i\in\mathcal{N}(u)}
+\frac{1}{\sqrt{d_u d_i}}
+\left(
+\mathbf{W}^{(k)}_1\mathbf{e}^{(k)}_i
++
+\mathbf{W}^{(k)}_2
+\big(\mathbf{e}^{(k)}_i \odot \mathbf{e}^{(k)}_u\big)
+\right)
+\right)
+$$
+
+\vspace{0.6em}
+
+\textbf{Итоговое представление.}
+Представления всех слоёв конкатенируются:
+
+$$
+\mathbf{z}_u =
+\mathbf{e}^{(0)}_u \Vert \mathbf{e}^{(1)}_u \Vert \ldots \Vert \mathbf{e}^{(L)}_u,
+\qquad
+s(u,i)=\langle\mathbf{z}_u,\mathbf{z}_i\rangle
+$$
+
+\vspace{0.5em}
+
+\footnotesize
+$\mathcal{N}(u)$ — соседи пользователя;
+$d_u,d_i$ — степени вершин;
+$\mathbf{W}^{(k)}_1,\mathbf{W}^{(k)}_2$ — обучаемые матрицы слоя;
+$\odot$ — покомпонентное произведение.
+
+\end{frame}
+
+
+\begin{frame}{NGCF: схема архитектуры}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.68\linewidth]{figures/NGCF.png}
+    \caption{\small
+    Схема архитектуры NGCF.
+    }
+    \label{fig:ngcf_slide}
+\end{figure}
+
+\end{frame}
+
+% 7
+\begin{frame}{GCMC}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/GCMC.png}
+    \caption{\scriptsize
+    Архитектура GCMC.
+    }
+    \label{fig:gcmc_slide}
+\end{figure}
+
+\vspace{-0.3em}
+
+\textbf{Кодировщик:}
+$
+  \mathbf{h}_u =
+  \sigma\left(
+  \operatorname{accum}_{q\in\mathcal{R}}
+  \sum_{i\in\mathcal{N}_q(u)}
+  \frac{1}{c_{ui}} \mathbf{W}_q\mathbf{x}_i
+  \right),
+  \qquad
+  \mathbf{z}_u=\sigma(\mathbf{W}\mathbf{h}_u)
+$
+
+\vspace{0.45em}
+
+\textbf{Декодировщик:}
+$
+  p(\hat r_{ui}=q)=
+  \frac{\exp(\mathbf{z}_u^\top \mathbf{Q}_q\mathbf{z}_i)}
+  {\sum_{s\in\mathcal{R}}\exp(\mathbf{z}_u^\top \mathbf{Q}_s\mathbf{z}_i)}
+$
+
+\vspace{0.45em}
+
+\textbf{Функция потерь:}
+$
+  \mathcal{L}_{\mathrm{CE}}
+  =
+  -\sum_{(u,i)\in\Omega}
+  \sum_{q\in\mathcal{R}}
+  \mathbb{I}[r_{ui}=q]\log p(\hat r_{ui}=q)
+$
+
+\end{frame}
+
+% 8
+\begin{frame}{Датасет MovieLens 25M + признаки фильмов}
+\small
+
+\begin{columns}[T,onlytextwidth]
+
+\column{0.48\textwidth}
+
+\textbf{Статистика после обработки}
+\begin{itemize}
+  \item 144\,009 warm-users;
+  \item 15\,935 cold-users;
+  \item 31\,999 фильмов;
+  \item 160 признаков фильма;
+  \item 19.57M обучающих взаимодействий.
+\end{itemize}
+
+\vspace{0.5em}
+
+\footnotesize
+\textbf{Cold-user} — пользователь отсутствует в обучающем графе, 
+но для него доступна вспомогательная-история
+\textbf{Warm-user} — пользователь присутствовал в обучающем графе
+
+\column{0.5\textwidth}
+
+\textbf{Предлагаемые дополнительные признаки фильмов}
+\begin{itemize}
+  \item жанры, SVD-компоненты тегов, года выпуска;
+  \item Метаданные: агрегаты по самым популярным актёрам, режиссёрам и сценаристам.
+\end{itemize}
+\footnotesize
+Использовались данные с сайта IMDb, преобразованные с помощью библиотек pandas и numpy.
+
+\centering
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{dataset.png}
+    \caption{\scriptsize
+    Распределение длины истории просмотра.
+    }
+    \label{fig:data}
+\end{figure}
+
+\end{columns}
+
+\end{frame}
+
+% 9
+\begin{frame}{Эксперимент: признаки фильмов}
+
+\textbf{Проверялись два способа использования признаков фильмов:}
+\begin{itemize}
+  \item \textbf{инициализация:} признаки задают начальное представление
+  \item \textbf{добавка:} признаковый вектор добавляется к обучаемому вектору объекта через обучаемое преобразование
+  
+\end{itemize}
+
+\scriptsize
+\vspace{0.3em}
+
+\begin{columns}[T,onlytextwidth]
+
+\column{0.49\textwidth}
+\centering
+\textbf{MF}
+
+\vspace{0.2em}
+
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Модель & HR@20 & HR@50 & nDCG@20 \\
+\midrule
+\texttt{MF-64}      & 0.2447 & 0.3956 & 0.0601 \\
+\texttt{MF-128}     & 0.2458 & 0.3990 & 0.0616 \\
+\texttt{MF-128-init}& \textbf{0.2479} & \textbf{0.4021} & \textbf{0.0621} \\
+\texttt{MF-128-add} & 0.2349 & 0.3971 & 0.0560 \\
+\texttt{MF-256-add} & 0.2385 & 0.3969 & 0.0577 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.25em}
+
+\parbox{0.95\linewidth}{\centering
+\scriptsize
+Влияние размерности эмбеддингов и способа использования признаков фильмов в MF.
+}
+
+\column{0.49\textwidth}
+\centering
+\textbf{GCMC}
+
+\vspace{0.2em}
+
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Модель & HR@20 & HR@50 & nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC-noFeat}} & 0.1887 & 0.3103 & 0.0473 \\
+\texttt{\detokenize{GCMC}} & \textbf{0.1889} & \textbf{0.3121} & \textbf{0.0477} \\
+\texttt{\detokenize{GCMC-add}} & 0.1871 & 0.3098 & 0.0457 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.25em}
+
+\parbox{0.95\linewidth}{\centering
+\scriptsize
+Влияние признаков фильмов в GCMC.
+}
+
+\end{columns}
+
+\end{frame}
+
+
+% 10
+\begin{frame}{Эксперимент: время в GCMC}
+\small
+
+\textbf{Предлагаемый коэффициенты временного затухания:}
+
+$$
+  \alpha_{ui}(t)=\exp\big(-\gamma(t-t_{ui})\big)
+$$
+
+\vspace{0.45em}
+
+\textbf{Совместная функция потерь:}
+
+$$
+  \mathcal{L}=\mathcal{L}_{\mathrm{CE}}+\lambda\mathcal{L}_{\mathrm{BPR}},
+  \qquad
+  \mathcal{L}_{\mathrm{BPR}}=-\log\sigma(s(u,i^+)-s(u,i^-)).
+$$
+
+\vspace{0.6em}
+
+\begin{table}
+\centering
+\caption{\scriptsize Влияние временного затухания в GCMC на качество рекомендаций.}
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{lcc}
+\toprule
+Модель & HR@20 & nDCG@20 \\
+\midrule
+GCMC & 0.1889 & 0.0477 \\
+GCMC-time & \textbf{0.1989} & \textbf{0.0482} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{0.2em}
+
+\centering
+Cold-user HR@20: $0.1892 \rightarrow \textbf{0.1946}$.
+
+\end{frame}
+
+% 11
+\begin{frame}{Эксперимент: функции рейтингового веса}
+\small
+
+\textbf{Встраивание рейтинга в механизм сообщений NGCF}
+
+$$
+\mathbf{e}^{(k+1)}_u =
+\sigma\left(
+\sum_{i\in\mathcal{N}(u)}
+\frac{\textcolor{red}{w(r_{ui})}}{\sqrt{d_u d_i}}
+\left(
+\mathbf{W}^{(k)}_1\mathbf{e}^{(k)}_i
++
+\mathbf{W}^{(k)}_2
+\big(\mathbf{e}^{(k)}_i \odot \mathbf{e}^{(k)}_u\big)
+\right)
+\right)
+$$
+
+Линейная:
+$$
+w_{\mathrm{lin}}(r)
+=
+\frac{r-r_{\min}}{r_{\max}-r_{\min}}.
+$$
+
+
+\textbf{Предлагаемые функции рейтингового веса}
+
+Обучаемая экспоненциальная:
+$$
+w_{\mathrm{exp}}(r)
+=
+\frac{\exp(\beta r)-\exp(\beta r_{\min})}
+{\exp(\beta r_{\max})-\exp(\beta r_{\min})},
+\qquad
+\beta>0.
+$$
+Обучаемая softplus-функция:
+
+$$
+w_{\mathrm{spline}}(r)
+=
+\operatorname{softplus}
+\left(
+\sum_{m=1}^{M} a_m B_m(r)
+\right)
+\qquad
+\operatorname{softplus}(x)=\log(1+\exp(x))
+$$
+
+\footnotesize
+$B_m(r)$ — базисные сплайн-функции;
+$a_m$ — обучаемые параметры.
+
+\end{frame}
+
+% 12
+\begin{frame}{Эксперимент: результат функций веса}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/rating_weight_learned_function.png}
+    \caption{\scriptsize Вид функций рейтингового веса $w(r)$ для разных вариантов NGCF.}
+\end{figure}
+
+\begin{table}
+\centering
+\scriptsize
+\label{tab:rating_weight_function_slide}
+\begin{tabular}{llrrr}
+\toprule
+Функция веса & Модель & HR@20 & HR@50 & nDCG@20 \\
+\midrule
+Линейная & \texttt{\detokenize{NGCF-lin}} & 0.2024 & 0.3545 & 0.0452 \\
+Экспоненциальная  & \texttt{\detokenize{NGCF-exp}} & 0.2038 & 0.3555 & 0.0455 \\
+Softplus & \texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{0.3644} & \textbf{0.0473} \\
+\bottomrule
+\end{tabular}
+\caption{\scriptsize Влияние функции рейтингового веса в NGCF.}
+\end{table}
+
+\footnotesize
+\textbf{Вывод:} NGCF с softplus апроксимацией лучше попадает в предпочтения пользователя, GCMC с учётом времени лучше ранжирует внутри списка.
+
+\end{frame}
+
+% 13
+\begin{frame}{Сравнение графовых моделей}
+
+
+\begin{table}
+\centering
+\caption{ Сравнение графовых моделей в базовом сценарии.}
+\label{tab:graph_models_slide}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrr}
+\toprule
+Модель & HR@20 &  HR@50 &  nDCG@20 \\
+\midrule
+\texttt{\detokenize{GCMC-rel}}    & 0.1929 & 0.3123 & 0.0470 \\
+\texttt{\detokenize{GCMC}}        & 0.1889 & 0.3121 & 0.0477 \\
+\texttt{\detokenize{GCMC-time}}   & 0.1989 & 0.3280 & \textbf{0.0482} \\
+\texttt{\detokenize{NGCF-lin}}    & 0.2024 & 0.3545 & 0.0452 \\
+\texttt{\detokenize{NGCF-exp}}    & 0.2038 & 0.3555 & 0.0455 \\
+\texttt{\detokenize{NGCF-spline}} & \textbf{0.2108} & \textbf{0.3644} & 0.0473 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\footnotesize
+\begin{itemize}
+  \item Обучаемая функция веса в NGCF повышает вероятность попадания релевантных фильмов в $K$ лучших.
+  \item Временная модификация GCMC лучше упорядочивает найденные релевантные фильмы.
+\end{itemize}
+
+\end{frame}
+
+
+% 14
+\begin{frame}{Эксперимент: гибридные модели}
+\scriptsize
+
+\textbf{Предлагаемые схемы совмещения моделей}
+\begin{enumerate}
+  \item $\mathrm{TT}\leftarrow\mathrm{GNN}$: инициализация two-tower модели графовыми эмбеддингами.
+  \item $\mathbf{z}_u=\alpha_u\mathbf{z}^{TT}_u+(1-\alpha_u)\mathbf{z}^{GNN}_u$,
+  $\mathbf{z}_i=\alpha_i\mathbf{z}^{TT}_i+(1-\alpha_i)\mathbf{z}^{GNN}_i$: ансамбль представлений.
+\end{enumerate}
+
+\vspace{0.45em}
+
+\centering
+
+\captionof{table}{\scriptsize Результаты гибридных моделей в стандартном сценарии.}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrr}
+\toprule
+Модель &  HR@20 &  HR@50 &  nDCG@20 \\
+\midrule
+\texttt{\detokenize{TT}} & 0.3223 & 0.5128 & 0.0796 \\
+\texttt{\detokenize{TT<-GCMC}} & 0.3196 & 0.5128 & 0.0785 \\
+\texttt{\detokenize{TT<-NGCF}} & 0.1437 & 0.2629 & 0.0292 \\
+\texttt{\detokenize{Ens-TT-NGCF}} & 0.2208 & 0.3580 & 0.0542 \\
+\texttt{\detokenize{Ens-TT-GCMC-frz}} & 0.3251 & 0.5117 & 0.0806 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & \textbf{0.3432} & \textbf{0.5373} & \textbf{0.0874} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.45em}
+
+\raggedright
+\begin{itemize}
+  \item Замороженный ансамбль: $\alpha_u=0.5598$, $\alpha_i=0.5327$.
+  \item Совместное дообучение: $\alpha_u=0.5171$, $\alpha_i=0.5161$.
+  \item Веса близки к $0.5$, значит используются оба источника представлений.
+\end{itemize}
+
+\end{frame}
+
+% 15
+\begin{frame}{Финальное сравнение: новые пользователи}
+\small
+
+\scriptsize
+\begin{table}
+\centering
+\caption{\scriptsize Сравнение качества в базовом(W) и сценарии новых пользовтелей (С).}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Модель & W HR@20 & C HR@20 & C HR@50 & C nDCG@20 \\
+\midrule
+\texttt{TT} & 0.3223 & 0.3156 & 0.5057 & 0.0778 \\
+\texttt{TT-norate} & 0.3207 & \textbf{0.3239} & \textbf{0.5071} & \textbf{0.0806} \\
+\texttt{GCMC-time} & 0.1989 & 0.1946 & 0.3134 & 0.0469 \\
+\texttt{NGCF-spline} & 0.2108 & 0.0003 & 0.0004 & 0.0000 \\
+\texttt{Ens-TT-GCMC-frz} & 0.3251 & 0.2825 & 0.4664 & 0.0667 \\
+\texttt{Ens-TT-GCMC-ft} & \textbf{0.3432} & 0.2603 & 0.4280 & 0.0618 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\footnotesize
+\begin{itemize}
+  \item Лучшая модель в базовом сценариий - дообученный взвешенный ансамбль GCMC с TT.
+  \item Лучшая модель для новых пользователей - TT без учёта рейтинга.
+  \item Графовые модели хуже переносятся на новых пользователей.
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Финальное сравнение: качество и время}
+\scriptsize
+
+\begin{table}
+\centering
+\caption{\scriptsize Зафиксирован прирост качества у предлагаемого ансамбля относительно базовой модели TT-SASRec.}
+\label{tab:final_results_relative_gain_slide}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Модель & HR@20 & $\Delta$ HR@20 & nDCG@20 & $\Delta$ nDCG@20 & Время, сек \\
+\midrule
+\texttt{\detokenize{TT}} & 0.3223 & 0.0\% & 0.0796 & 0.0\% & 90.48 \\
+\texttt{\detokenize{TT-norate}} & 0.3207 & -0.5\% & 0.0792 & -0.4\% & 89.70 \\
+\texttt{\detokenize{GCMC-time}} & 0.1989 & -38.3\% & 0.0482 & -39.4\% & 69.10 \\
+\texttt{\detokenize{NGCF-spline}} & 0.2108 & -34.6\% & 0.0473 & -40.5\% & \textbf{65.67} \\
+\texttt{\detokenize{TT<-GCMC}} & 0.3196 & -0.8\% & 0.0785 & -1.3\% & 94.98 \\
+\texttt{\detokenize{Ens-TT-GCMC-ft}} & \textbf{0.3432} & \textbf{+6.5\%} & \textbf{0.0874} & \textbf{+9.8\%} & 83.27 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.35\linewidth]{figures/validation_tt_vs_ens_gcmc.png}
+\caption{\scriptsize Сравнение динамики качества TT-SASRec и ансамбля TT--GCMC на валидации.}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Финальное сравнение: проблема выбора}
+
+\begin{columns}[T,onlytextwidth]
+
+\column{0.5\textwidth}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/warm_vs_cold_user_tradeoff.png}
+\caption{\scriptsize Выбор между качеством на двух сценариях.}
+\end{figure} 
+
+\column{0.50\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/quality_time_tradeoff.png}
+\caption{\scriptsize Выбор между качеством рекомендаций и временем обучения.}
+\end{figure}
+\end{columns}
+
+
+\begin{itemize}
+  \item Лучший баланс качества в разных сценариях: \texttt{\detokenize{Ens-TT-GCMC-frz}} или базовая \texttt{\detokenize{TT}}.
+  \item \texttt{\detokenize{Ens-TT-GCMC-ft}} даёт максимум качества при умеренном времени.
+\end{itemize}
+
+\end{frame}
+
+% 16
+\begin{frame}{Результаты и выводы}
+\begin{itemize}
+  \item Инициализация предлагемыми признаками помогает модели сходится к лучшему качеству.
+  \item Учёт явной оценки рекомендации полезен в графовых нейросетях в виде предлагаемой обучаемой функция веса или как тип ребра.
+  \item Учёт времени в GCMC улучшает качество ранжирования.
+  \item Предложенное ансамблирование и дообучение SASRec с GCMC позволяет достичь прироста в 9,8\% по nDCG@20.
+\end{itemize}
+\end{frame}
+
+% 17
+\begin{frame}[allowframebreaks]{Литература}
+\footnotesize
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
+\begin{thebibliography}{99}
+
+\bibitem{wang2019ngcf}
+X.~Wang, X.~He, M.~Wang, F.~Feng, T.-S. Chua,
+``Neural Graph Collaborative Filtering,''
+in \textit{Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval},
+2019, pp.~165--174.
+doi: \url{https://doi.org/10.1145/3331184.3331267}
+
+\bibitem{kang2018sasrec}
+W.-C. Kang, J.~McAuley,
+``Self-Attentive Sequential Recommendation,''
+in \textit{Proceedings of the 2018 IEEE International Conference on Data Mining},
+2018, pp.~197--206.
+doi: \url{https://doi.org/10.1109/ICDM.2018.00035}
+
+\bibitem{vandenberg2017gcmc}
+R.~van den Berg, T.~N. Kipf, M.~Welling,
+``Graph Convolutional Matrix Completion,''
+\textit{Microsoft Research publication},
+October 2017.
+url: \url{https://www.microsoft.com/en-us/research/publication/graph-convolutional-matrix-completion/}
+
+\bibitem{covington2016youtube}
+P.~Covington, J.~Adams, E.~Sargin,
+``Deep Neural Networks for YouTube Recommendations,''
+in \textit{Proceedings of the 10th ACM Conference on Recommender Systems},
+2016, pp.~191--198.
+doi: \url{https://doi.org/10.1145/2959100.2959190}
+
+\bibitem{kula2015lightfm}
+M.~Kula,
+``Metadata Embeddings for User and Item Cold-Start Recommendations,''
+in \textit{Proceedings of the 2nd Workshop on New Trends on Content-Based Recommender Systems},
+2015, pp.~14--21.
+url: \url{https://ceur-ws.org/Vol-1448/paper4.pdf}
+
+\bibitem{harper2015movielens}
+F.~M. Harper, J.~A. Konstan,
+``The MovieLens Datasets: History and Context,''
+\textit{ACM Transactions on Interactive Intelligent Systems},
+vol.~5, no.~4, pp.~1--19, 2015.
+doi: \url{https://doi.org/10.1145/2827872}
+
+\bibitem{gunawardana2009survey}
+A.~Gunawardana, G.~Shani,
+``A Survey of Accuracy Evaluation Metrics of Recommendation Tasks,''
+\textit{Journal of Machine Learning Research},
+vol.~10, pp.~2935--2962, 2009.
+url: \url{https://www.jmlr.org/papers/v10/gunawardana09a.html}
+
+\bibitem{rendle2009bpr}
+S.~Rendle, C.~Freudenthaler, Z.~Gantner, L.~Schmidt-Thieme,
+``BPR: Bayesian Personalized Ranking from Implicit Feedback,''
+in \textit{Proceedings of the Twenty-Fifth Conference on Uncertainty in Artificial Intelligence},
+2009, pp.~452--461.
+url: \url{https://dl.acm.org/doi/10.5555/1795114.1795167}
+
+\bibitem{koren2009matrix}
+Y.~Koren, R.~Bell, C.~Volinsky,
+``Matrix Factorization Techniques for Recommender Systems,''
+\textit{Computer},
+vol.~42, no.~8, pp.~30--37, 2009.
+doi: \url{https://doi.org/10.1109/MC.2009.263}
+
+\bibitem{herlocker2004evaluating}
+J.~L. Herlocker, J.~A. Konstan, L.~G. Terveen, J.~T. Riedl,
+``Evaluating Collaborative Filtering Recommender Systems,''
+\textit{ACM Transactions on Information Systems},
+vol.~22, no.~1, pp.~5--53, 2004.
+doi: \url{https://doi.org/10.1145/963770.963772}
+
+\bibitem{jarvelin2002dcg}
+K.~J{\"a}rvelin, J.~Kek{\"a}l{\"a}inen,
+``Cumulated Gain-Based Evaluation of IR Techniques,''
+\textit{ACM Transactions on Information Systems},
+vol.~20, no.~4, pp.~422--446, 2002.
+doi: \url{https://doi.org/10.1145/582415.582418}
+
+\bibitem{lee2024rogmc}
+J.~Lee, S.~Kang, H.~Yu,
+``Improving Matrix Completion by Exploiting Rating Ordinality in Graph Neural Networks,''
+\textit{arXiv preprint}, 2024.
+url: \url{https://arxiv.org/abs/2403.04504}
+
+\end{thebibliography}
+\end{frame}
+
+\end{document}
