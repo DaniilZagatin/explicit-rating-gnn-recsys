@@ -189,7 +189,7 @@ explicit-rating-gnn-recsys/
 - [`methods.md`](docs/methods.md) — описание рассматриваемых методов;
 - [`experiments.md`](docs/experiments.md) — описание экспериментальной постановки;
 - [`repository_notes.md`](docs/repository_notes.md) — дополнительные пояснения к структуре репозитория;
-- `dataset.png` — распределение оценок фильмов в датасете;
+- `dataset.png` — распределение длины истории пользователя в датасете;
 - `docs/thesis/` — текст выпускной квалификационной работы;
 - `docs/presentation/` — презентация к защите.
 
